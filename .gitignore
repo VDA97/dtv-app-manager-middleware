@@ -1,0 +1,5 @@
+# Conteúdo do seu .gitignore
+build/
+.cache/
+*.o
+app_manager_test
