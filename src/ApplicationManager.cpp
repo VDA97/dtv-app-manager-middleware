@@ -7,9 +7,9 @@ using json = nlohmann::json;
 
 std::shared_ptr<BaseApp> ApplicationManager::find_app(int id) {
     auto it = std::find_if(m_app_list.begin(), m_app_list.end(),
-                      [id](const std::shared_ptr<BaseApp> app)
+                      [id](const std::shared_ptr<BaseApp>& app)
                       {
-                          return app->get_app_data().id == id;
+                          return app->getId() == id;
                       });
     return (it != m_app_list.end()) ? *it : nullptr;
 }
@@ -20,23 +20,45 @@ void ApplicationManager::create_app_list(const std::string &app_list_str)
     {
         auto j_list = json::parse(app_list_str);
 
+        if (!j_list.is_array())
+        {
+            throw std::runtime_error("JSON is not an array");
+        }
+
         for (const auto &item : j_list)
         {
-            AppInfo info;
-            info.id = item["id"];
-            info.name = item["name"];
-            info.full_path = item["path"];
-            info.control_code = static_cast<CONTROL_CODE>(item["controlCode"]);
-            info.engine = static_cast<ENGINE_TYPE>(item["engineType"]);
-            info.type = static_cast<APP_TYPE>(item["appType"]);
-            info.state = APP_STATE::STOPPED;
+            try
+            {
+                if (!item.contains("id") || !item.contains("name"))
+                {
+                    std::cerr << "[Warning] Skipping app: Missing mandatory fields." << std::endl;
+                    continue;
+                }
 
-            create_or_update_app(info);
+                AppInfo info;
+                info.id = item.at("id");
+                info.name = item.at("name");
+                info.full_path = item.value("path", "/default/path"); // default/path is just a fallbackValue
+                info.control_code = static_cast<CONTROL_CODE>(item.at("controlCode"));
+                info.engine = static_cast<ENGINE_TYPE>(item.at("engineType"));
+                info.type = static_cast<APP_TYPE>(item.at("appType"));
+                info.state = APP_STATE::STOPPED;
+
+                create_or_update_app(info);
+            }
+            catch (const std::exception &e)
+            {
+                std::cerr << "[Error] Failed to process app item: " << e.what() << std::endl;
+            }
         }
     }
     catch (json::parse_error &e)
     {
         std::cerr << "Error processing JSON: " << e.what() << std::endl;
+    }
+    catch (const std::exception &e)
+    {
+        std::cerr << "[Error] General Exception: " << e.what() << std::endl;
     }
 }
 
@@ -63,22 +85,24 @@ void ApplicationManager::create_or_update_app(const AppInfo &new_info)
     }
 }
 
-
-void ApplicationManager::remove_app(int id)
+bool ApplicationManager::remove_app(int id)
 {
-    auto it = std::remove_if(m_app_list.begin(), m_app_list.end(),
-                                [id](const std::shared_ptr<BaseApp> &app)
-                                {
-                                    return app->get_app_data().id == id;
-                                });
+    auto it = std::find_if(m_app_list.begin(), m_app_list.end(),
+                           [id](const std::shared_ptr<BaseApp> &app)
+                           {
+                               return app->getId() == id;
+                           });
 
     if (it != m_app_list.end())
     {
-        m_app_list.erase(it, m_app_list.end());
-        std::cout << "[Manager] App ID " << id << " removed!" << std::endl;
+        m_app_list.erase(it);
+        return true;
     }
-    else
-    {
-        std::cerr << "[Error] Attempt to remove " << id << ", a non-existent app!" << std::endl;
-    }
+
+    return false;
+}
+
+size_t ApplicationManager::get_app_count() const 
+{
+    return m_app_list.size();
 }

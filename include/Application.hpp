@@ -51,7 +51,15 @@ public:
     BaseApp(const AppInfo &info);
     virtual ~BaseApp() = default;
     virtual void print_info() = 0;
-    const AppInfo &get_app_data() const;
+
+    int getId() const;
+    std::string getName() const;
+    std::string getPath() const;
+    APP_STATE getState() const;
+    APP_TYPE getType() const;
+    ENGINE_TYPE getEngine() const;
+    CONTROL_CODE getControlCode() const;
+
     void set_state(APP_STATE new_state);
     void update_app(const AppInfo &new_info);
 };

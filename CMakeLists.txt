@@ -5,15 +5,25 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(nlohmann_json REQUIRED)
+find_package(GTest REQUIRED)
 
-include_directories(include)
 
-set(SOURCES 
-    src/main.cpp 
+set(LIB_SOURCES 
     src/ApplicationManager.cpp
     src/Application.cpp
 )
 
-add_executable(app_manager_test ${SOURCES})
+add_executable(app_manager_test 
+    ${LIB_SOURCES} 
+    tests/ApplicationTest.cpp
+    tests/AppManagerTest.cpp
+)
 
-target_link_libraries(app_manager_test PRIVATE nlohmann_json::nlohmann_json)
+target_link_libraries(app_manager_test 
+    PRIVATE 
+        nlohmann_json::nlohmann_json
+        GTest::gtest
+        GTest::gtest_main
+)
+
+target_include_directories(app_manager_test PRIVATE include)
