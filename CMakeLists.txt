@@ -13,8 +13,10 @@ set(LIB_SOURCES
     src/Application.cpp
 )
 
+# --- First Target 1: Unit Tests ---
 add_executable(app_manager_test 
     ${LIB_SOURCES} 
+    tests/TestMain.cpp
     tests/ApplicationTest.cpp
     tests/AppManagerTest.cpp
 )
@@ -23,8 +25,20 @@ target_link_libraries(app_manager_test
     PRIVATE 
         nlohmann_json::nlohmann_json
         GTest::gtest
-        GTest::gtest_main
         spdlog::spdlog
 )
 
 target_include_directories(app_manager_test PRIVATE include)
+
+# --- Target 2: Application ---
+add_executable(dtv_middleware 
+    ${LIB_SOURCES}
+    apps/main.cpp
+)
+
+target_link_libraries(dtv_middleware 
+    PRIVATE 
+        nlohmann_json::nlohmann_json
+        spdlog::spdlog
+)
+target_include_directories(dtv_middleware PRIVATE include)
