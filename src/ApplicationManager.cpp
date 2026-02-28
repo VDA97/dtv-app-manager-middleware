@@ -1,6 +1,7 @@
 #include "ApplicationManager.hpp"
 #include <algorithm>
-#include <iostream>
+#include <spdlog/spdlog.h>
+#include <spdlog/fmt/ostr.h>
 #include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
@@ -31,7 +32,7 @@ void ApplicationManager::create_app_list(const std::string &app_list_str)
             {
                 if (!item.contains("id") || !item.contains("name"))
                 {
-                    std::cerr << "[Warning] Skipping app: Missing mandatory fields." << std::endl;
+                    spdlog::warn("Skipping app: Missing mandatory fields.");
                     continue;
                 }
 
@@ -48,17 +49,17 @@ void ApplicationManager::create_app_list(const std::string &app_list_str)
             }
             catch (const std::exception &e)
             {
-                std::cerr << "[Error] Failed to process app item: " << e.what() << std::endl;
+                spdlog::error("[Error] Failed to process app item: {} ", e.what());
             }
         }
     }
     catch (json::parse_error &e)
     {
-        std::cerr << "Error processing JSON: " << e.what() << std::endl;
+        spdlog::error("Error processing JSON: {}", e.what());
     }
     catch (const std::exception &e)
     {
-        std::cerr << "[Error] General Exception: " << e.what() << std::endl;
+        spdlog::error("General Exception: {}", e.what());
     }
 }
 
@@ -69,7 +70,7 @@ void ApplicationManager::create_or_update_app(const AppInfo &new_info)
     if (existing_app)
     {
         existing_app->update_app(new_info);
-        std::cout << "[Manager] App ID " << new_info.id << " updated !" << std::endl;
+        spdlog::info("[Manager] App ID: {} updated !", new_info.id);
     }
     else
     {
@@ -81,7 +82,7 @@ void ApplicationManager::create_or_update_app(const AppInfo &new_info)
         {
             m_app_list.push_back(std::make_shared<AppTV30>(new_info));
         }
-        std::cout << "[Manager] New App ID " << new_info.id << " created and added !" << std::endl;
+        spdlog::info("[Manager] New App ID: {} created and added !", new_info.id);
     }
 }
 

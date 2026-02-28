@@ -2,7 +2,9 @@
 #define APPLICATION_HPP
 
 #include <string>
-#include <iostream>
+#include <ostream>
+#include <spdlog/spdlog.h>
+#include <spdlog/fmt/ostr.h>
 
 enum class CONTROL_CODE : int
 {

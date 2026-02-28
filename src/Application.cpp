@@ -18,24 +18,24 @@ void BaseApp::update_app(const AppInfo &new_info) { m_app_data = new_info; }
 
 void AppTV2X::print_info()
 {
-    std::cout << "[TV 2.X App] Name: " << m_app_data.name
-              << " | Path: " << m_app_data.full_path
-              << " | Engine: " << (m_app_data.engine == ENGINE_TYPE::NCL ? "NCL" : "HTML")
-              << " | id: " << m_app_data.id
-              << " | Control Code : " << m_app_data.control_code
-              << " | Type : " << m_app_data.type
-              << " | state :" << m_app_data.state
-              << std::endl;
+    spdlog::info("[TV 2.X App] Name: {} | Path: {} | Engine: {} | ID: {} | Control: {} | Type: {} | State: {}",
+                 m_app_data.name,
+                 m_app_data.full_path,
+                 (m_app_data.engine == ENGINE_TYPE::NCL ? "NCL" : "HTML"),
+                 m_app_data.id,
+                 m_app_data.control_code,
+                 m_app_data.type,
+                 m_app_data.state);
 }
 
 void AppTV30::print_info()
 {
-    std::cout << "[TV 3.X App] Name: " << m_app_data.name
-              << " | Path: " << m_app_data.full_path
-              << " | Engine: " << (m_app_data.engine == ENGINE_TYPE::NCL ? "NCL" : "HTML")
-              << " | id: " << m_app_data.id
-              << " | Control Code : " << m_app_data.control_code
-              << " | Type : " << m_app_data.type
-              << " | state :" << m_app_data.state
-              << std::endl;
+    spdlog::info("[TV 3.X App] Name: {} | Path: {} | Engine: {} | ID: {} | Control: {} | Type: {} | State: {}",
+                 m_app_data.name,
+                 m_app_data.full_path,
+                 (m_app_data.engine == ENGINE_TYPE::NCL ? "NCL" : "HTML"),
+                 m_app_data.id,
+                 m_app_data.control_code,
+                 m_app_data.type,
+                 m_app_data.state);
 }
