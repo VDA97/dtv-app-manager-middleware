@@ -5,64 +5,87 @@ A robust C++17 object-oriented manager designed for Digital TV (DTV) application
 ## 🚀 Features
 
 * **Dynamic Management**: Full support for Create, Update, and Delete (CRUD) operations on applications.
-* **JSON Integration**: Powered by `nlohmann/json` for seamless parsing of external API strings.
-* **Polymorphic Architecture**: Uses a `BaseApp` interface to handle specialized behavior for `AppTV2X` and `AppTV30`.
-* **Memory Safety**: Built with `std::shared_ptr` and `std::vector` to ensure automatic memory management and reference integrity.
-* **Efficient Lookups**: Optimized search by ID to prevent duplicate entries and facilitate quick updates.
+* **JSON Integration**: Powered by `nlohmann/json` for seamless parsing of external metadata.
+* **Polymorphic Architecture**: Specialized behavior for `AppTV2X` and `AppTV30` using a `BaseApp` interface.
+* **Memory Safety**: Built with `std::shared_ptr` to ensure automatic resource management and avoid memory leaks.
+* **Containerized Environment**: Multi-stage Docker build for consistent compilation and lightweight execution.
 
 ---
 
 ## 🏗️ Architecture & Design
 
-The project follows the standard C++ separation of concerns, ensuring a clean build process and high maintainability.
-
-* **`Application` (Core)**: Defines data structures (`AppInfo`), Enums, and specific TV implementations.
-* **`ApplicationManager` (Engine)**: Manages the collection of apps and encapsulates the business logic for list processing.
+The project follows a clean separation of concerns, facilitating maintenance and scalability.
 
 
 
----
-
-## 🛠️ Requirements
-
-* **Compiler**: GCC/Clang with C++17 support.
-* **Build System**: CMake 3.10 or higher.
-* **Dependency**: [nlohmann/json](https://github.com/nlohmann/json)
-    * *Ubuntu/WSL installation*: `sudo apt install nlohmann-json3-dev`
-
-## 📥 Build & Run
-
-1.  **Clone and Navigate**:
-    ```bash
-    git clone <your-repo-url>
-    cd dtv-app-manager
-    ```
-
-2.  **Configure and Compile**:
-    ```bash
-    cmake -S . -B build
-    cmake --build build
-    ```
-
-3.  **Execute Tests**:
-    ```bash
-    ./build/app_manager_test
-    ```
+* **`Application` (Core)**: Defines the data structures (`AppInfo`), Enums, and specific implementations for TV standards.
+* **`ApplicationManager` (Engine)**: Encapsulates the business logic, manages the app collection, and handles JSON parsing.
+* **`Logging`**: Integrated with `spdlog` for high-performance, formatted console output.
 
 ---
 
-## 📋 JSON Data Protocol
+## 🐳 Running with Docker (Highly Recommended)
 
-The `ApplicationManager` expects a JSON array containing application metadata:
+The project is fully containerized. This ensures that all dependencies (`spdlog`, `GTest`, `nlohmann-json`) are correctly configured without polluting your host machine.
 
-```json
+### 1. Build the Image
+From the root directory, run:
+```bash
+docker build -t dtv-app-manager .
+```
+
+### 2. Execution Options
+From the root directory, Run Middleware (Standard):
+```bash
+docker build -t dtv-app-manager .
+```
+From the root directory, Run Unit Tests Individually:
+```bash
+docker run --rm --entrypoint ./app_manager_test dtv-app-manager
+```
+
+🛠️ Local Development (Manual Build)
+If you prefer to build locally (e.g., via WSL or Linux), ensure you have the following requirements:
+
+Compiler: GCC/Clang with C++17 support.
+
+Build System: CMake 3.10 or higher.
+
+Dependencies: nlohmann-json3-dev, libspdlog-dev, libgtest-dev.
+
+Steps:
+```bash
+cmake -S . -B build
+cmake --build build
+```
+
+# To run tests locally:
+```bash
+./build/app_manager_test
+```
+# To run the app locally:
+```bash
+./build/dtv_middleware
+```
+📋 JSON Data Protocol
+The ApplicationManager expects a JSON array containing application metadata. The system is resilient to missing keys, providing clear error logging:
 [
     {
         "id": 101,
-        "name": "Global Play",
+        "name": "Test App",
         "path": "/usr/bin/dtv_app",
         "controlCode": 1,
         "engineType": 9,
         "appType": 1
     }
 ]
+
+📈 Quality Standards
+
+This project implements the following developer goals for 2026:
+
+[x] Dockerization: Full multi-stage environment.
+
+[x] Standardization: Portable and reproducible build process.
+
+[x] Robustness: Unit testing and exception handling for JSON parsing.
