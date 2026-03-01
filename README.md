@@ -37,7 +37,7 @@ docker build -t dtv-app-manager .
 ### 2. Execution Options
 From the root directory, Run Middleware (Standard):
 ```bash
-docker build -t dtv-app-manager .
+docker run --rm dtv-app-manager
 ```
 From the root directory, Run Unit Tests Individually:
 ```bash
@@ -65,7 +65,7 @@ cmake --build build
 ```
 # To run the app locally:
 ```bash
-./build/dtv_middleware
+./build/app_manager
 ```
 📋 JSON Data Protocol
 The ApplicationManager expects a JSON array containing application metadata. The system is resilient to missing keys, providing clear error logging:

@@ -34,8 +34,8 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # COPIE OS DOIS BINÁRIOS AQUI!
-COPY --from=builder /app/build/dtv_middleware .
+COPY --from=builder /app/build/app_manager .
 COPY --from=builder /app/build/app_manager_test .
 
 # Deixe o Middleware como padrão
-CMD ["./dtv_middleware"]
+CMD ["./app_manager"]
