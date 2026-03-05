@@ -1,6 +1,4 @@
-#ifndef APPLICATION_HPP
-#define APPLICATION_HPP
-
+#pragma once
 #include <string>
 #include <ostream>
 #include <spdlog/spdlog.h>
@@ -79,5 +77,3 @@ public:
     using BaseApp::BaseApp;
     void print_info() override;
 };
-
-#endif
